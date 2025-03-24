@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review & Confirm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .section {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .patient-list {
+            margin: 10px 0;
+        }
+        .patient-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .patient-name {
+            font-weight: bold;
+        }
+        .patient-details {
+            color: #666;
+            font-size: 14px;
+        }
+        .test-name {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            padding: 15px 0;
+        }
+        .confirm-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .cashback-option {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .cashback-option h4 {
+            margin-top: 0;
+        }
+        .cashback-option ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        .cashback-option li {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .radio-option input {
+            margin-right: 10px;
+        }
+        
+        /* Bottom Sheet Styles */
+        .bottom-sheet {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+            transition: bottom 0.3s ease-in-out;
+            z-index: 1000;
+        }
+        .bottom-sheet.visible {
+            bottom: 0;
+        }
+        .bottom-sheet h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .bottom-sheet input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .bottom-sheet .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .bottom-sheet .close-btn {
+            text-align: right;
+            font-size: 20px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        .overlay.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Review & Confirm</h2>
+
+        <!-- Appointment Time Section -->
+        <div class="section">
+            <p id="appointmentTime"></p>
+        </div>
+
+        <!-- Address Section -->
+        <div class="section">
+            <p id="address"></p>
+        </div>
+
+        <!-- Patients List Section -->
+        <div class="section patient-list" id="patientsList">
+            <h3>Patients</h3>
+            <!-- Patient items will be added dynamically here -->
+        </div>
+
+        <!-- Tests Section -->
+        <div class="section">
+            <h3>Tests</h3>
+            <div class="test-item">
+                <span>Basic Health Check</span>
+                <span class="price">₹ 199</span>
+            </div>
+        </div>
+
+        <!-- Total Section -->
+        <div class="total">Total: ₹ <span id="totalAmount">199</span></div>
+
+        <!-- Cashback Options Section -->
+        <div class="section">
+            <h3>Pick a Cashback Option</h3>
+            
+            <div class="cashback-option">
+                <div class="radio-option">
+                    <input type="radio" id="noCashback" name="cashback" checked>
+                    <label for="noCashback"><b>No Cashback</b></label>
+                </div>
+                <ul>
+                    <li>I Don't Want Cashback</li>
+                    <li>You will pay the standard amount</li>
+                    <li>No cashback will be added to your wallet</li>
+                    <li>You will miss out on amazing app only deals</li>
+                </ul>
+            </div>
+            
+            <div class="cashback-option">
+                <div class="radio-option">
+                    <input type="radio" id="doctorCOffer" name="cashback">
+                    <label for="doctorCOffer"><b>Doctor C App Offer</b></label>
+                </div>
+                <ul>
+                    <li>₹50 Cashback</li>
+                    <li>Download Doctor C App after your booking for ₹100 cashback</li>
+                    <li>Cashback will be added to Doctor C wallet within 48 hours of your appointment</li>
+                    <li>Enjoy exclusive deals with Doctor C App</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Confirm Button -->
+        <button class="confirm-btn" id="confirmBtn">Confirm Appointment</button>
+    </div>
+
+    <!-- Bottom Sheet for Email Entry -->
+    <div class="overlay" id="overlay"></div>
+    <div class="bottom-sheet" id="emailBottomSheet">
+        <div class="close-btn" onclick="closeEmailSheet()">✖</div>
+        <h3>Enter Your Email</h3>
+        <input type="email" id="userEmail" placeholder="Enter your email address">
+        <button class="submit-btn" onclick="submitAppointment()">Confirm & Send Email</button>
+    </div>
+
+    <script>
+        window.onload = function () {
+            // Get appointment data from localStorage
+            const appointmentData = JSON.parse(localStorage.getItem("appointmentData"));
+            const familyData = JSON.parse(localStorage.getItem("familyData")) || [];
+            
+            // Display appointment details
+            if (appointmentData) {
+                document.getElementById("appointmentTime").innerText = 
+                    appointmentData.time + ", " + appointmentData.date;
+                document.getElementById("address").innerText = appointmentData.address;
+            } else {
+                alert("No appointment data found! Please select date, time and address first.");
+                window.location.href = "fourthpage.html";
+            }
+            
+            // Display family members/patients
+            const patientsList = document.getElementById("patientsList");
+            const totalAmount = document.getElementById("totalAmount");
+            
+            if (familyData.length > 0) {
+                familyData.forEach((member, index) => {
+                    const patientItem = document.createElement("div");
+                    patientItem.className = "patient-item";
+                    patientItem.innerHTML = `
+                        <div class="patient-name">${member.name}</div>
+                        <div class="patient-details">${member.age}/${member.gender}</div>
+                        <div class="test-name">Basic Health Check @ Home</div>
+                    `;
+                    patientsList.appendChild(patientItem);
+                });
+                
+                // Update total amount based on number of patients
+                const total = 199 * familyData.length;
+                totalAmount.textContent = total;
+            } else {
+                // If no family members, show just the primary patient
+                const patientItem = document.createElement("div");
+                patientItem.className = "patient-item";
+                patientItem.innerHTML = `
+                    <div class="patient-name">You</div>
+                    <div class="test-name">Basic Health Check @ Home</div>
+                `;
+                patientsList.appendChild(patientItem);
+            }
+            
+            // Add click event to confirm button
+            document.getElementById("confirmBtn").addEventListener("click", function() {
+                openEmailSheet();
+            });
+        };
+        
+        // Function to open email bottom sheet
+        function openEmailSheet() {
+            document.getElementById("overlay").classList.add("visible");
+            document.getElementById("emailBottomSheet").classList.add("visible");
+        }
+        
+        // Function to close email bottom sheet
+        function closeEmailSheet() {
+            document.getElementById("overlay").classList.remove("visible");
+            document.getElementById("emailBottomSheet").classList.remove("visible");
+        }
+        
+        // Function to submit appointment and send email
+        function submitAppointment() {
+            const email = document.getElementById("userEmail").value;
+            
+            // Validate email
+            if (!email || !email.includes("@") || !email.includes(".")) {
+                alert("Please enter a valid email address");
+                return;
+            }
+            
+            // Here you would typically send the email using a backend service
+            // For demonstration, we'll just show an alert and redirect
+            alert(`Appointment confirmed! A confirmation will be sent to ${email}`);
+            
+            // Save email to localStorage
+            const appointmentData = JSON.parse(localStorage.getItem("appointmentData")) || {};
+            appointmentData.email = email;
+            localStorage.setItem("appointmentData", JSON.stringify(appointmentData));
+            
+            // Close the bottom sheet
+            closeEmailSheet();
+            
+            // Redirect to thank you page or wherever you want
+            window.location.href = "thankyou.html";
+            
+            // In a real implementation, you would call your backend API here
+            // to actually send the email confirmation
+            // sendConfirmationEmail(email);
+        }
+        
+        // This would be your actual email sending function (would need backend implementation)
+        function sendConfirmationEmail(email) {
+            // This is just a placeholder - you would need a server-side implementation
+            console.log(`Sending confirmation email to ${email}`);
+            // Example: fetch('/api/send-email', { method: 'POST', body: JSON.stringify({ email }) });
+        }
+    </script>
+</body>
+</html>

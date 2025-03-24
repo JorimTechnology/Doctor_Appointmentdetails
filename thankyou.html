@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed | Doctor C</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .logo {
+            font-family: 'Helvetica Neue', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .logo .domain {
+            font-size: 16px;
+            color: #666;
+            display: block;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+        .confirmation-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            margin-bottom: 30px;
+        }
+        .confirmation-icon {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        .confirmation-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .confirmation-details {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .appointment-info {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: left;
+        }
+        .info-item {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .info-value {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        Instagram
+        <span class="domain">doctorc.in</span>
+    </div>
+
+    <div class="confirmation-card">
+        <div class="confirmation-icon">✓</div>
+        <div class="confirmation-title">Order Confirmed</div>
+        <div class="confirmation-details">
+            Thank you for choosing Doctor C. Your appointment has been successfully booked.
+        </div>
+        
+        <div class="appointment-info" id="appointmentInfo">
+            <!-- Appointment details will be inserted here -->
+        </div>
+        
+        <a href="index.html" class="btn">Back to Home</a>
+    </div>
+
+    <script>
+        // Load appointment data from localStorage
+        window.onload = function() {
+            const appointmentData = JSON.parse(localStorage.getItem("appointmentData"));
+            const familyData = JSON.parse(localStorage.getItem("familyData")) || [];
+            const appointmentInfo = document.getElementById("appointmentInfo");
+            
+            if (appointmentData) {
+                let infoHTML = `
+                    <div class="info-item">
+                        <div class="info-label">Date & Time:</div>
+                        <div class="info-value">${appointmentData.time}, ${appointmentData.date}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Address:</div>
+                        <div class="info-value">${appointmentData.address}</div>
+                    </div>
+                `;
+                
+                if (appointmentData.email) {
+                    infoHTML += `
+                        <div class="info-item">
+                            <div class="info-label">Confirmation sent to:</div>
+                            <div class="info-value">${appointmentData.email}</div>
+                        </div>
+                    `;
+                }
+                
+                if (familyData.length > 0) {
+                    infoHTML += `<div class="info-item">
+                        <div class="info-label">Patients:</div>`;
+                    
+                    familyData.forEach(member => {
+                        infoHTML += `
+                            <div class="info-value">${member.name} (${member.age}/${member.gender})</div>
+                        `;
+                    });
+                    
+                    infoHTML += `</div>`;
+                }
+                
+                appointmentInfo.innerHTML = infoHTML;
+            }
+        };
+    </script>
+</body>
+</html>

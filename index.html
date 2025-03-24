@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoctorC Deal Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            padding: 20px;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0055ff;
+            margin-bottom: 10px;
+        }
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d2d2d;
+        }
+        .price {
+            margin: 10px 0;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .old-price {
+            text-decoration: line-through;
+            color: red;
+        }
+        .new-price {
+            color: green;
+        }
+        .info {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+        .info div {
+            flex: 1;
+            text-align: center;
+            min-width: 120px;
+        }
+        .highlight {
+            background: #e8f0ff;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #ccc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: not-allowed;
+        }
+        .btn.enabled {
+            background: #0055ff;
+            cursor: pointer;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 450px) {
+            .container {
+                width: 90%;
+                padding: 15px;
+            }
+            .title {
+                font-size: 16px;
+            }
+            .price {
+                font-size: 20px;
+            }
+            .info {
+                font-size: 13px;
+            }
+            input {
+                font-size: 14px;
+            }
+            .btn {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">doctorC</div>
+        <div class="title">Couple Health Check @ Home</div>
+        <div class="price">
+            <span class="old-price">₹1998</span>
+            <span class="new-price">₹399</span>
+        </div>
+        <div class="info">
+            <div>📜 Reports on WhatsApp</div>
+            <div>🧪 33 Tests <a href="#">View Tests</a></div>
+        </div>
+        <div class="highlight">Package includes tests for <b>2 people</b></div>
+        <input type="text" id="mobileNumber" placeholder="Enter your mobile number" maxlength="10"/>
+        <button class="btn" id="unlockBtn" disabled>🔒 Unlock</button>
+    </div>
+
+    <script>
+        const mobileInput = document.getElementById("mobileNumber");
+        const unlockBtn = document.getElementById("unlockBtn");
+
+        mobileInput.addEventListener("input", function () {
+            const mobileNumber = mobileInput.value.trim();
+            if (/^\d{10}$/.test(mobileNumber)) {
+                unlockBtn.classList.add("enabled");
+                unlockBtn.removeAttribute("disabled");
+            } else {
+                unlockBtn.classList.remove("enabled");
+                unlockBtn.setAttribute("disabled", "true");
+            }
+        });
+
+        unlockBtn.addEventListener("click", function () {
+            if (unlockBtn.classList.contains("enabled")) {
+                localStorage.setItem("userMobile", mobileInput.value);
+                window.location.href = "details.html"; // Redirect to the second page
+            }
+        });
+    </script>
+
+</body>
+</html>

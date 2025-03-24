@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Family Member</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Back Button -->
+        <div class="back-button">&larr; Add Family Member</div>
+
+        <!-- Family Members Container -->
+        <div id="familyMembers">
+            <div class="member">
+                <label for="name">Name</label>
+                <input type="text" class="name" placeholder="Name">
+
+                <label for="age">Age</label>
+                <select class="age">
+                    <option value="">Select Age</option> 
+                </select>
+
+                <label>Gender</label>
+                <div class="gender-selection">
+                    <label class="gender-option">
+                        <input type="radio" name="gender-1" value="Male">
+                        <span>⚪ Male</span>
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="gender-1" value="Female">
+                        <span>⚪ Female</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Family Members -->
+        <h3>Add Family Members</h3>
+        <div class="family-buttons">
+            <button class="family-btn" onclick="addMember('Family Member')">➕ Add Family Member</button>
+            <button class="family-btn" onclick="addMember('Dad')">➕ Add Dad</button>
+            <button class="family-btn" onclick="addMember('Spouse')">➕ Add Spouse</button>
+        </div>
+
+        <!-- Pricing -->
+        <div class="pricing">₹999 <span class="discounted">₹199/person</span></div>
+
+        <!-- Next Button -->
+        <button class="next-button" onclick="saveData()">Next</button>
+    </div>
+
+    <script>
+        // Function to populate age dropdown
+        function populateAgeDropdown(selectElement) {
+            for (let i = 1; i <= 120; i++) {
+                let option = document.createElement("option");
+                option.value = i;
+                option.textContent = i;
+                selectElement.appendChild(option);
+            }
+        }
+
+        // Populate the first age dropdown
+        populateAgeDropdown(document.querySelector(".age"));
+
+        // Function to add a new family member section
+        function addMember(role) {
+            const familyContainer = document.getElementById("familyMembers");
+            const memberCount = familyContainer.children.length + 1; // Unique identifier for gender radio
+
+            const newMember = document.createElement("div");
+            newMember.classList.add("member");
+
+            newMember.innerHTML = `
+                <h4>${role}</h4>
+                <label for="name">Name</label>
+                <input type="text" class="name" placeholder="Name">
+
+                <label for="age">Age</label>
+                <select class="age">
+                    <option value="">Select Age</option> 
+                </select>
+
+                <label>Gender</label>
+                <div class="gender-selection">
+                    <label class="gender-option">
+                        <input type="radio" name="gender-${memberCount}" value="Male">
+                        <span>⚪ Male</span>
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="gender-${memberCount}" value="Female">
+                        <span>⚪ Female</span>
+                    </label>
+                </div>
+            `;
+
+            familyContainer.appendChild(newMember);
+
+            // Populate the new age dropdown
+            populateAgeDropdown(newMember.querySelector(".age"));
+        }
+
+        // Function to save data to localStorage
+        function saveData() {
+            const members = document.querySelectorAll(".member");
+            let familyData = [];
+
+            members.forEach((member) => {
+                const name = member.querySelector(".name").value;
+                const age = member.querySelector(".age").value;
+                const gender = member.querySelector("input[type='radio']:checked")?.value;
+
+                if (name && age && gender) {
+                    familyData.push({ name, age, gender });
+                }
+            });
+
+            localStorage.setItem("familyData", JSON.stringify(familyData));
+            window.location.href = "thirdpage.html"; // Redirect to the next page
+        }
+    </script>
+
+</body>
+</html>
