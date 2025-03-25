@@ -7,17 +7,63 @@
     <link rel="stylesheet" href="fourthpage.css">
     <style>
         /* Bottom Sheet Styles */
-        .bottom-sheet {
-            position: fixed;
-            bottom: -100%;
-            right: 20;
-            width:50%;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-            border-radius: 15px 15px 0 0;
-            padding: 20px;
-            transition: bottom 0.3s ease-in-out;
-        }
+.bottom-sheet {
+    position: relative;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    width: 90%;
+    max-width: 400px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* When the bottom sheet is visible */
+.bottom-sheet.visible {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Close button */
+.bottom-sheet .close-btn {
+    text-align: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Inputs and Save button */
+.bottom-sheet input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.bottom-sheet .save-btn {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .bottom-sheet {
+        width: 95%;
+    }
+}
+
 
         .bottom-sheet.visible {
             bottom: 0;
@@ -58,7 +104,7 @@
 
     <div class="container">
         <!-- Header -->
-        <input type="text" class="area-input" placeholder="Enter your area" value="600007">
+        <input type="text" class="area-input" placeholder="Enter your area" >
 
         <!-- Alert Message -->
         <div class="alert-box">
@@ -76,7 +122,6 @@
             <p>High demand slots are chargeable at ₹99. Pick other slots for free home service.</p>
         </div>
 
-        <!-- Time Slots -->
         <div class="time-slots">
             <button class="slot">05:45 AM</button>
             <button class="slot">06:10 AM</button>
@@ -132,7 +177,7 @@
     
                 let dateBox = document.createElement("div");
                 dateBox.classList.add("date-box");
-                if (i === 0) dateBox.classList.add("selected"); // Default to the first day
+                if (i === 0) dateBox.classList.add("selected");
     
                 dateBox.innerHTML = `${dayName} <br> <span>${dateNumber}</span>`;
     
@@ -181,38 +226,60 @@
         }
     
         // Function to save address and redirect
-        function saveAddress() {
-            const area = document.getElementById("area").value;
-            const city = document.getElementById("city").value;
-            const landmark = document.getElementById("landmark").value;
-            const street = document.getElementById("street").value;
-            const doorNo = document.getElementById("doorNo").value;
+    function saveAddress() {
+    const area = document.getElementById("area").value;
+    const city = document.getElementById("city").value;
+    const landmark = document.getElementById("landmark").value;
+    const street = document.getElementById("street").value;
+    const doorNo = document.getElementById("doorNo").value;
 
-            if (!area || !city || !landmark || !street || !doorNo) {
-                alert("Please fill all the fields.");
-                return;
-            }
+    if (!area || !city  || !street) {
+        alert("Address saved Suceessfully.");
+        return;
+    }
 
-            // Get selected date and time
-            const selectedDate = document.querySelector(".date-box.selected");
-            const selectedTime = document.querySelector(".slot.selected");
+    const selectedDateBox = document.querySelector(".date-box.selected");
+    const selectedTimeSlot = document.querySelector(".slot.selected");
+    
+    if (!selectedDateBox || !selectedTimeSlot) {
+        alert("Please select a date and time.");
+        return;
+    }
 
-            // Format the address
-            const address = `${doorNo}, ${street}, ${landmark}, ${area}, ${city}`;
+    const dayName = selectedDateBox.textContent.split("\n")[0].trim();
+    const dateNumber = selectedDateBox.querySelector("span").textContent;
+    const currentYear = new Date().getFullYear();
+    
+    const time = selectedTimeSlot.textContent.replace("⚡", "").trim();
 
-            // Prepare data to store
-            const appointmentData = {
-                date: selectedDate.querySelector("span").textContent + " " + selectedDate.textContent.split("\n")[0].trim(),
-                time: selectedTime.textContent.replace("⚡", "").trim(),
-                address: address
-            };
+    const appointmentData = {
+        date: `${dayName}, ${dateNumber} ${currentYear}`,
+        time: time
+    };
+    localStorage.setItem("appointmentData", JSON.stringify(appointmentData));
 
-            // Save to localStorage
-            localStorage.setItem("appointmentData", JSON.stringify(appointmentData));
+    const addressData = {
+        doorNo: doorNo,
+        street: street,
+        landmark: landmark,
+        area: area,
+        city: city
+    };
 
-            // Redirect to confirmation page
-            window.location.href = "confirmapp.html";
-        }
+    fetch("http://localhost:5000/api/address/save", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(addressData)
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert(data);
+        window.location.href = "confirmapp.html";
+    })
+    .catch(error => console.error("Error:", error));
+}
     </script>
 </body>
 </html>

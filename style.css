@@ -6,8 +6,17 @@ body {
     padding: 0;
 }
 
+.name {
+    width: 100%; 
+    max-width: 400px; 
+    padding: 8px;
+    box-sizing: border-box; 
+}
+
+
 .container {
     width: 90%;
+    overflow: hidden;
     max-width: 400px;
     margin: 20px auto;
     background: #fff;
@@ -15,6 +24,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
 
 /* Back Button */
 .back-button {

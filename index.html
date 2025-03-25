@@ -4,144 +4,311 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoctorC Deal Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
         }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f0f2f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             padding: 20px;
         }
+        
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 85, 255, 0.1);
             text-align: center;
-            padding: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
         }
-        .logo {
-            font-size: 22px;
+        
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #0055ff, #00aaff);
+        }
+        
+        .logo-container {
+            margin-bottom: 20px;
+            animation: fadeInDown 0.8s;
+        }
+        
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
+            background-color: #0055ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
             font-weight: bold;
-            color: #0055ff;
-            margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0, 85, 255, 0.3);
         }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0055ff;
+            margin-bottom: 5px;
+        }
+        
         .title {
             font-size: 18px;
-            font-weight: bold;
-            color: #2d2d2d;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            animation: fadeIn 0.8s 0.2s both;
         }
+        
+        .price-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 10px;
+            animation: fadeIn 0.8s 0.4s both;
+        }
+        
         .price {
-            margin: 10px 0;
-            font-size: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
             font-weight: bold;
         }
+        
         .old-price {
             text-decoration: line-through;
-            color: red;
+            color: #ff4757;
+            position: relative;
         }
+        
+        .old-price::after {
+            content: '80% OFF';
+            position: absolute;
+            top: -15px;
+            right: -25px;
+            background: #ff4757;
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 10px;
+        }
+        
         .new-price {
-            color: green;
+            color: #2ecc71;
+            font-size: 28px;
         }
+        
         .info {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 15px 0;
             font-size: 14px;
             flex-wrap: wrap;
+            animation: fadeIn 0.8s 0.6s both;
         }
+        
         .info div {
             flex: 1;
             text-align: center;
             min-width: 120px;
+            padding: 8px;
+            margin: 5px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
-        .highlight {
+        
+        .info div:hover {
             background: #e8f0ff;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            margin-bottom: 10px;
+            transform: translateY(-3px);
         }
+        
+        .info a {
+            color: #0055ff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #e8f0ff 0%, #d0e0ff 100%);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin: 15px 0;
+            border-left: 4px solid #0055ff;
+            animation: fadeIn 0.8s 0.8s both;
+        }
+        
+        .input-group {
+            position: relative;
+            margin: 20px 0;
+            animation: fadeIn 0.8s 1s both;
+        }
+        
         input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-top: 10px;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 16px;
+            transition: all 0.3s ease;
         }
+        
+        input:focus {
+            border-color: #0055ff;
+            box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.1);
+            outline: none;
+        }
+        
+        .input-group::before {
+            content: '📱';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+        }
+        
         .btn {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             background: #ccc;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
+            font-weight: 600;
             margin-top: 10px;
             cursor: not-allowed;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            animation: fadeIn 0.8s 1.2s both;
         }
+        
         .btn.enabled {
-            background: #0055ff;
+            background: linear-gradient(135deg, #0055ff 0%, #00aaff 100%);
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 85, 255, 0.3);
         }
-
+        
+        .btn.enabled:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 85, 255, 0.4);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
         /* RESPONSIVE DESIGN */
         @media (max-width: 450px) {
             .container {
-                width: 90%;
-                padding: 15px;
+                width: 95%;
+                padding: 20px;
             }
+            
             .title {
                 font-size: 16px;
             }
+            
             .price {
                 font-size: 20px;
             }
+            
             .info {
                 font-size: 13px;
             }
+            
             input {
                 font-size: 14px;
+                padding: 12px 12px 12px 40px;
             }
+            
             .btn {
                 font-size: 14px;
+                padding: 12px;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="logo">doctorC</div>
-        <div class="title">Couple Health Check @ Home</div>
-        <div class="price">
-            <span class="old-price">₹1998</span>
-            <span class="new-price">₹399</span>
+    <div class="container animate__animated animate__fadeIn">
+        <div class="logo-container">
+            <div class="logo-img">RH</div>
+            <div class="logo-text">RevaHealthCare</div>
         </div>
+        <div class="title">Complete Dental Checkup Package</div>
+        
+        <div class="price-container pulse">
+            <div class="price">
+                <span class="old-price">₹1998</span>
+                <span class="new-price">₹399</span>
+            </div>
+        </div>
+        
         <div class="info">
             <div>📜 Reports on WhatsApp</div>
             <div>🧪 33 Tests <a href="#">View Tests</a></div>
         </div>
-        <div class="highlight">Package includes tests for <b>2 people</b></div>
-        <input type="text" id="mobileNumber" placeholder="Enter your mobile number" maxlength="10"/>
-        <button class="btn" id="unlockBtn" disabled>🔒 Unlock</button>
+        
+        <div class="highlight">Package includes tests for <b>2 people</b> at this special price!</div>
+        
+        <div class="input-group">
+            <input type="tel" id="mobileNumber" placeholder="Enter your mobile number" maxlength="10" inputmode="numeric" pattern="[0-9]*"/>
+        </div>
+        
+        <button class="btn" id="unlockBtn" disabled>
+            <span>🔒</span> Unlock Special Offer
+        </button>
     </div>
 
     <script>
         const mobileInput = document.getElementById("mobileNumber");
         const unlockBtn = document.getElementById("unlockBtn");
 
-        mobileInput.addEventListener("input", function () {
-            const mobileNumber = mobileInput.value.trim();
+        // Only allow numeric input
+        mobileInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            
+            const mobileNumber = this.value.trim();
             if (/^\d{10}$/.test(mobileNumber)) {
                 unlockBtn.classList.add("enabled");
                 unlockBtn.removeAttribute("disabled");
@@ -151,11 +318,26 @@
             }
         });
 
-        unlockBtn.addEventListener("click", function () {
+        unlockBtn.addEventListener("click", function() {
             if (unlockBtn.classList.contains("enabled")) {
+                // Add button click animation
+                unlockBtn.style.transform = "scale(0.95)";
+                setTimeout(() => {
+                    unlockBtn.style.transform = "scale(1)";
+                }, 200);
+                
+                // Save to localStorage and redirect
                 localStorage.setItem("userMobile", mobileInput.value);
-                window.location.href = "details.html"; // Redirect to the second page
+                window.location.href = "details.html";
             }
+        });
+        
+        // Add animation to price container on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const priceContainer = document.querySelector('.price-container');
+            setTimeout(() => {
+                priceContainer.classList.remove('pulse');
+            }, 3000);
         });
     </script>
 

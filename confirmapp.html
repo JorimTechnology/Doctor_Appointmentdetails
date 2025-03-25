@@ -155,15 +155,29 @@
         .overlay.visible {
             display: block;
         }
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Review & Confirm</h2>
 
-        <!-- Appointment Time Section -->
-        <div class="section">
-            <p id="appointmentTime"></p>
+        <div class="date-selection">
+            <p id="dateSelection"></p>
         </div>
 
         <!-- Address Section -->
@@ -230,31 +244,151 @@
         <div class="close-btn" onclick="closeEmailSheet()">✖</div>
         <h3>Enter Your Email</h3>
         <input type="email" id="userEmail" placeholder="Enter your email address">
+        <div class="spinner" id="spinner"></div>
         <button class="submit-btn" onclick="submitAppointment()">Confirm & Send Email</button>
     </div>
 
     <script>
+        // Helper functions for bottom sheet
+        function openEmailSheet() {
+            document.getElementById("overlay").classList.add("visible");
+            document.getElementById("emailBottomSheet").classList.add("visible");
+        }
+
+        function closeEmailSheet() {
+            document.getElementById("overlay").classList.remove("visible");
+            document.getElementById("emailBottomSheet").classList.remove("visible");
+        }
+
+        // Function to show loading spinner
+        function showLoading(show) {
+            const spinner = document.getElementById("spinner");
+            const submitBtn = document.querySelector(".submit-btn");
+            
+            if (show) {
+                spinner.style.display = "block";
+                submitBtn.style.display = "none";
+            } else {
+                spinner.style.display = "none";
+                submitBtn.style.display = "block";
+            }
+        }
+
+        // Function to submit appointment and send email
+        async function submitAppointment() {
+            const email = document.getElementById("userEmail").value;
+            if (!email) {
+                alert("Please enter your email address");
+                return;
+            }
+
+            // Validate email format
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert("Please enter a valid email address");
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                // Get all the appointment data
+                const appointmentData = JSON.parse(localStorage.getItem("appointmentData"));
+                const familyData = JSON.parse(localStorage.getItem("familyData")) || [];
+                const address = document.getElementById("address").innerText;
+
+                // For simplicity, we'll just use the first family member or "You"
+                const patient = familyData.length > 0 ? familyData[0] : { name: "You", age: "", gender: "" };
+
+                // Prepare data to send
+                const appointmentDetails = {
+                    email: email,
+                    name: patient.name,
+                    age: patient.age || "",
+                    gender: patient.gender || "",
+                    date: appointmentData.date,
+                    time: appointmentData.time,
+                    address: address,
+                    testName: "Basic Health Check",
+                    amount: "₹199"
+                };
+
+                // Send to server
+                const response = await fetch("http://localhost:5000/api/appointment/confirm", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(appointmentDetails)
+                });
+
+                const data = await response.text();
+
+                if (response.ok) {
+                    alert("Appointment confirmed! Check your email for details.");
+                    closeEmailSheet();
+                    // Optionally redirect to a thank you page
+                  window.location.href = "thankyou.html";
+                } else {
+                    throw new Error(data || "Failed to confirm appointment");
+                }
+            } catch (error) {
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Main initialization when page loads
         window.onload = function () {
             // Get appointment data from localStorage
             const appointmentData = JSON.parse(localStorage.getItem("appointmentData"));
             const familyData = JSON.parse(localStorage.getItem("familyData")) || [];
             
-            // Display appointment details
+            // Display appointment details more prominently
             if (appointmentData) {
-                document.getElementById("appointmentTime").innerText = 
-                    appointmentData.time + ", " + appointmentData.date;
-                document.getElementById("address").innerText = appointmentData.address;
+                const dateTimeDisplay = document.getElementById("dateSelection");
+                dateTimeDisplay.innerHTML = `
+                    <strong>Appointment Time:</strong><br>
+                    ${appointmentData.time}<br>
+                    ${appointmentData.date}
+                `;
+                
+                // Add some styling to the date-time display
+                dateTimeDisplay.style.backgroundColor = "#f0f8ff";
+                dateTimeDisplay.style.padding = "15px";
+                dateTimeDisplay.style.borderRadius = "8px";
+                dateTimeDisplay.style.margin = "15px 0";
             } else {
-                alert("No appointment data found! Please select date, time and address first.");
+                alert("No appointment data           found! Please select date, time, and address first.");
                 window.location.href = "fourthpage.html";
             }
-            
-            // Display family members/patients
+
+            // Fetch and display address
+            fetch("http://localhost:5000/api/address")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const address = data[data.length - 1]; // Get the latest address
+                        document.getElementById("address").innerHTML = `
+                            <strong>Address:</strong><br>
+                            ${address.doorNo}, ${address.street}<br>
+                            ${address.landmark}<br>
+                            ${address.area}, ${address.city}
+                        `;
+                    } else {
+                        document.getElementById("address").innerText = "No saved address found.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching address:", error);
+                    document.getElementById("address").innerText = "Failed to load address.";
+                });
+
+            // Display patients
             const patientsList = document.getElementById("patientsList");
             const totalAmount = document.getElementById("totalAmount");
             
             if (familyData.length > 0) {
-                familyData.forEach((member, index) => {
+                familyData.forEach((member) => {
                     const patientItem = document.createElement("div");
                     patientItem.className = "patient-item";
                     patientItem.innerHTML = `
@@ -264,8 +398,8 @@
                     `;
                     patientsList.appendChild(patientItem);
                 });
-                
-                // Update total amount based on number of patients
+
+                // Update total amount based on the number of patients
                 const total = 199 * familyData.length;
                 totalAmount.textContent = total;
             } else {
@@ -278,61 +412,11 @@
                 `;
                 patientsList.appendChild(patientItem);
             }
-            
-            // Add click event to confirm button
+
             document.getElementById("confirmBtn").addEventListener("click", function() {
                 openEmailSheet();
             });
         };
-        
-        // Function to open email bottom sheet
-        function openEmailSheet() {
-            document.getElementById("overlay").classList.add("visible");
-            document.getElementById("emailBottomSheet").classList.add("visible");
-        }
-        
-        // Function to close email bottom sheet
-        function closeEmailSheet() {
-            document.getElementById("overlay").classList.remove("visible");
-            document.getElementById("emailBottomSheet").classList.remove("visible");
-        }
-        
-        // Function to submit appointment and send email
-        function submitAppointment() {
-            const email = document.getElementById("userEmail").value;
-            
-            // Validate email
-            if (!email || !email.includes("@") || !email.includes(".")) {
-                alert("Please enter a valid email address");
-                return;
-            }
-            
-            // Here you would typically send the email using a backend service
-            // For demonstration, we'll just show an alert and redirect
-            alert(`Appointment confirmed! A confirmation will be sent to ${email}`);
-            
-            // Save email to localStorage
-            const appointmentData = JSON.parse(localStorage.getItem("appointmentData")) || {};
-            appointmentData.email = email;
-            localStorage.setItem("appointmentData", JSON.stringify(appointmentData));
-            
-            // Close the bottom sheet
-            closeEmailSheet();
-            
-            // Redirect to thank you page or wherever you want
-            window.location.href = "thankyou.html";
-            
-            // In a real implementation, you would call your backend API here
-            // to actually send the email confirmation
-            // sendConfirmationEmail(email);
-        }
-        
-        // This would be your actual email sending function (would need backend implementation)
-        function sendConfirmationEmail(email) {
-            // This is just a placeholder - you would need a server-side implementation
-            console.log(`Sending confirmation email to ${email}`);
-            // Example: fetch('/api/send-email', { method: 'POST', body: JSON.stringify({ email }) });
-        }
     </script>
 </body>
 </html>

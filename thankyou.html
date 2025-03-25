@@ -88,14 +88,12 @@
         .info-value {
             color: #666;
         }
+        .address-value {
+            white-space: pre-line;
+        }
     </style>
 </head>
 <body>
-    <div class="logo">
-        Instagram
-        <span class="domain">doctorc.in</span>
-    </div>
-
     <div class="confirmation-card">
         <div class="confirmation-icon">✓</div>
         <div class="confirmation-title">Order Confirmed</div>
@@ -104,15 +102,15 @@
         </div>
         
         <div class="appointment-info" id="appointmentInfo">
-            <!-- Appointment details will be inserted here -->
+            <!-- Content will be loaded dynamically -->
         </div>
         
         <a href="index.html" class="btn">Back to Home</a>
     </div>
 
     <script>
-        // Load appointment data from localStorage
-        window.onload = function() {
+        // Load appointment data from localStorage and API
+        window.onload = async function() {
             const appointmentData = JSON.parse(localStorage.getItem("appointmentData"));
             const familyData = JSON.parse(localStorage.getItem("familyData")) || [];
             const appointmentInfo = document.getElementById("appointmentInfo");
@@ -123,11 +121,36 @@
                         <div class="info-label">Date & Time:</div>
                         <div class="info-value">${appointmentData.time}, ${appointmentData.date}</div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Address:</div>
-                        <div class="info-value">${appointmentData.address}</div>
-                    </div>
                 `;
+                
+                // Fetch and display address from API
+                try {
+                    const response = await fetch("http://localhost:5000/api/address");
+                    if (response.ok) {
+                        const addressData = await response.json();
+                        if (addressData.length > 0) {
+                            const latestAddress = addressData[addressData.length - 1];
+                            infoHTML += `
+                                <div class="info-item">
+                                    <div class="info-label">Address:</div>
+                                    <div class="info-value address-value">
+                                        ${latestAddress.doorNo}, ${latestAddress.street}<br>
+                                        ${latestAddress.landmark}<br>
+                                        ${latestAddress.area}, ${latestAddress.city}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error fetching address:", error);
+                    infoHTML += `
+                        <div class="info-item">
+                            <div class="info-label">Address:</div>
+                            <div class="info-value">Address not available</div>
+                        </div>
+                    `;
+                }
                 
                 if (appointmentData.email) {
                     infoHTML += `
