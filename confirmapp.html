@@ -4,96 +4,289 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Review & Confirm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text: #374151;
+            --light-gray: #f3f4f6;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--text);
             display: flex;
             justify-content: center;
-        }
-        .container {
-            background: white;
-            width: 90%;
-            max-width: 600px;
             padding: 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            background: var(--white);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
             margin: 20px 0;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            transform: translateY(0);
+            transition: var(--transition);
+            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1);
         }
+
+        @keyframes cardEntrance {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+                box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+                box-shadow: var(--shadow);
+            }
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .section {
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            animation: fadeInUp 0.5s ease-out;
         }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .section:last-child {
             border-bottom: none;
         }
+
+        #dateSelection {
+            background-color: rgba(239, 246, 255, 0.5);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.2); }
+            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+
+        #address {
+            background-color: rgba(236, 253, 245, 0.5);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--success);
+        }
+
         .patient-list {
             margin: 10px 0;
         }
+
         .patient-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: var(--light-gray);
+            border-radius: 12px;
+            transition: var(--transition);
+            animation: slideUp 0.4s ease-out;
         }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .patient-item:hover {
+            transform: translateX(5px);
+            background-color: rgba(229, 231, 235, 0.8);
+        }
+
         .patient-name {
-            font-weight: bold;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
         }
+
         .patient-details {
-            color: #666;
+            color: var(--text);
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .test-name {
+            font-weight: 500;
+            margin-top: 8px;
+            color: var(--text);
             font-size: 14px;
         }
-        .test-name {
-            font-weight: bold;
-            margin-top: 5px;
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
         }
+
+        .price {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
         .total {
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 20px;
+            font-weight: 700;
             text-align: right;
-            padding: 15px 0;
+            padding: 20px 0;
+            color: var(--primary);
         }
-        .confirm-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 15px;
+
+        h3 {
+            margin-bottom: 15px;
+            color: var(--text);
+            font-size: 18px;
+            font-weight: 600;
         }
+
         .cashback-option {
             margin: 15px 0;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            transition: var(--transition);
+            background-color: var(--white);
         }
+
+        .cashback-option:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+        }
+
         .cashback-option h4 {
             margin-top: 0;
+            font-size: 16px;
         }
+
         .cashback-option ul {
             padding-left: 20px;
             margin-bottom: 0;
         }
+
         .cashback-option li {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-size: 14px;
-            color: #555;
+            color: var(--text);
+            opacity: 0.8;
         }
+
         .radio-option {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
         }
+
         .radio-option input {
-            margin-right: 10px;
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.2);
         }
-        
+
+        .radio-option label {
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .confirm-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .confirm-btn:active {
+            transform: translateY(1px);
+        }
+
+        .confirm-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0.2), rgba(255,255,255,0));
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .confirm-btn:hover::after {
+            transform: translateX(100%);
+        }
+
         /* Bottom Sheet Styles */
         .bottom-sheet {
             position: fixed;
@@ -103,45 +296,77 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-            border-radius: 15px 15px 0 0;
-            padding: 20px;
-            transition: bottom 0.3s ease-in-out;
+            background: var(--white);
+            box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.15);
+            border-radius: 20px 20px 0 0;
+            padding: 25px;
+            transition: bottom 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             z-index: 1000;
         }
+
         .bottom-sheet.visible {
             bottom: 0;
         }
+
         .bottom-sheet h3 {
             text-align: center;
             margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 20px;
         }
+
         .bottom-sheet input {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
             font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--light-gray);
         }
+
+        .bottom-sheet input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
         .bottom-sheet .submit-btn {
             width: 100%;
-            padding: 12px;
-            background: #28a745;
+            padding: 16px;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 20px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
         }
+
+        .bottom-sheet .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+        }
+
         .bottom-sheet .close-btn {
             text-align: right;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            color: var(--text);
+            opacity: 0.6;
+            transition: var(--transition);
         }
+
+        .bottom-sheet .close-btn:hover {
+            opacity: 1;
+            color: var(--primary);
+        }
+
         .overlay {
             position: fixed;
             top: 0;
@@ -151,24 +376,48 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
             display: none;
+            backdrop-filter: blur(5px);
         }
+
         .overlay.visible {
             display: block;
+            animation: fadeIn 0.3s ease-out;
         }
+
         /* Loading spinner */
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border-left-color: #09f;
+            border-left-color: var(--primary);
             animation: spin 1s linear infinite;
             margin: 20px auto;
             display: none;
         }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .section {
+                padding: 15px 0;
+            }
+            
+            .confirm-btn, .bottom-sheet .submit-btn {
+                padding: 14px;
+            }
         }
     </style>
 </head>
@@ -332,6 +581,8 @@
                     throw new Error(data || "Failed to confirm appointment");
                 }
             } catch (error) {
+                alert("An error occurred. Please try again.");
+                console.error("Error:", error);
             } finally {
                 showLoading(false);
             }
@@ -353,12 +604,13 @@
                 `;
                 
                 // Add some styling to the date-time display
-                dateTimeDisplay.style.backgroundColor = "#f0f8ff";
+                dateTimeDisplay.style.backgroundColor = "rgba(239, 246, 255, 0.5)";
                 dateTimeDisplay.style.padding = "15px";
-                dateTimeDisplay.style.borderRadius = "8px";
+                dateTimeDisplay.style.borderRadius = "12px";
                 dateTimeDisplay.style.margin = "15px 0";
+                dateTimeDisplay.style.borderLeft = "4px solid var(--primary)";
             } else {
-                alert("No appointment data           found! Please select date, time, and address first.");
+                alert("No appointment data found! Please select date, time, and address first.");
                 window.location.href = "fourthpage.html";
             }
 
